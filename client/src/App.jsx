@@ -14,6 +14,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminRoute from './components/layout/AdminRoute';
 import { Toaster } from 'react-hot-toast';
 import NotFound from './pages/NotFound';
+import AppLoader from './components/ui/AppLoader';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -46,7 +47,7 @@ const App = () => {
   }, [themeMode]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-primary-bg text-[var(--color-text-primary)] font-bold text-xl">Loading...</div>;
+    return <AppLoader />;
   }
 
   return (

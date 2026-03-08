@@ -2,6 +2,7 @@ import { Play, Plus, Share2, Star, X } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { fetchMovieDetails, fetchTvShowDetails, fetchMovieTrailer } from '../utils/movieApi';
+import MovieDetailsSkeleton from '../components/ui/MovieDetailsSkeleton';
 
 const MovieDetails = ({ type = "movie" }) => {
   const { id } = useParams();
@@ -40,11 +41,7 @@ const MovieDetails = ({ type = "movie" }) => {
   }, [id, type]);
 
   if (loading) {
-    return (
-      <div className="w-full bg-primary-bg min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent-gold"></div>
-      </div>
-    );
+    return <MovieDetailsSkeleton />;
   }
 
   if (error || !details) {

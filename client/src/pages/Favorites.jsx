@@ -1,5 +1,6 @@
-import { Heart, Loader } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import MovieCard from '../components/ui/MovieCard';
+import MovieCardSkeleton from '../components/ui/MovieCardSkeleton';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { fetchMovieDetails, fetchTvShowDetails } from '../utils/movieApi';
@@ -67,9 +68,10 @@ const Favorites = () => {
             </div>
 
             {loading || userLoading ? (
-                <div className="flex flex-col items-center justify-center py-32">
-                    <Loader className="w-12 h-12 text-accent-gold animate-spin mb-4" />
-                    <p className="text-text-secondary font-medium text-lg">Loading your favorites...</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                    {Array.from({ length: 12 }).map((_, i) => (
+                        <MovieCardSkeleton key={`loading-fav-${i}`} />
+                    ))}
                 </div>
             ) : !user ? (
                 <div className="text-center py-32 flex flex-col items-center justify-center animate-fade-in-up">
