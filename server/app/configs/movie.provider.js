@@ -80,6 +80,9 @@ const getMovieDetails = async (id) => {
         headers: {
             accept: 'application/json',
             Authorization: 'Bearer ' + API_KEY
+        },
+        params: {
+            append_to_response: 'external_ids,videos,watch/providers,credits,similar'
         }
     };
     const res = await axios.request(options);
@@ -106,6 +109,9 @@ const getTvShowDetails = async (id) => {
         headers: {
             accept: 'application/json',
             Authorization: 'Bearer ' + API_KEY
+        },
+        params: {
+            append_to_response: 'external_ids,videos,watch/providers,credits,similar'
         }
     };
     const res = await axios.request(options);

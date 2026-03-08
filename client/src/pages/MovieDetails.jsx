@@ -1,7 +1,7 @@
 import { Play, Plus, Share2, Star, X } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { fetchMovieDetails, fetchTvShowDetails, fetchMovieTrailer, fetchMovieCast, fetchTvShowCast, fetchSimilarMovies, fetchSimilarTvShows, fetchMovieProviders, fetchTvShowProviders } from '../utils/movieApi';
+import { fetchMovieDetails, fetchTvShowDetails } from '../utils/movieApi';
 import MovieDetailsSkeleton from '../components/ui/MovieDetailsSkeleton';
 import ActorModal from '../components/ui/ActorModal';
 import MovieCard from '../components/ui/MovieCard';
@@ -16,6 +16,7 @@ const MovieDetails = ({ type = "movie" }) => {
   const [showTrailer, setShowTrailer] = useState(false);
   const [showWebsitePlayer, setShowWebsitePlayer] = useState(false);
   const [selectedActor, setSelectedActor] = useState(null);
+  const [imdbId, setImdbId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -28,24 +29,29 @@ const MovieDetails = ({ type = "movie" }) => {
         setTrailerKey(null);
         if (type === 'tv') {
           data = await fetchTvShowDetails(id);
-          try {
-            const castData = await fetchTvShowCast(id);
-            setCast(castData.slice(0, 10)); // Top 10 cast
-          } catch (e) { }
         } else {
           data = await fetchMovieDetails(id);
-          try {
-            const castData = await fetchMovieCast(id);
-            setCast(castData.slice(0, 10)); // Top 10 cast
-          } catch (e) { }
-          try {
-            const key = await fetchMovieTrailer(id);
-            setTrailerKey(key);
-          } catch (e) {
-            console.log("No trailer available");
-          }
         }
+
         setDetails(data);
+
+        const trailer = data.videos?.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube');
+        setTrailerKey(trailer?.key || data.videos?.results?.[0]?.key || null);
+
+        setCast(data.credits?.cast?.slice(0, 10) || []);
+
+        const similarItems = data.similar?.results?.map(item => ({
+          id: item.id,
+          title: item.title || item.name,
+          rating: item.vote_average?.toFixed(1),
+          year: (item.release_date || item.first_air_date)?.split('-')[0] || null,
+          imageSrc: `https://image.tmdb.org/t/p/w200${item.poster_path}`,
+          type: type
+        })) || [];
+        setSimilar(similarItems.slice(0, 12));
+
+        setProviders(data['watch/providers']?.results || null);
+        setImdbId(data.external_ids?.imdb_id || null);
       } catch (err) {
         setError(err.message || 'Failed to fetch details');
       } finally {
@@ -67,6 +73,15 @@ const MovieDetails = ({ type = "movie" }) => {
     );
   }
 
+  const title = details.title || details.name;
+
+  const providerMap = {
+    'Plex': (imdb) => `https://watch.plex.tv/movie/${imdb}`,
+    'Pluto TV': (imdb) => `https://pluto.tv/search/details/movies/${imdb}`,
+    'Tubi TV': (titleStr) => `https://tubitv.com/search/${encodeURIComponent(titleStr)}`,
+    'YouTube': (titleStr) => `https://youtube.com/results?search_query=${encodeURIComponent(titleStr)}+full+movie`
+  };
+
   const getDisplayProviders = () => {
     if (!providers || Object.keys(providers).length === 0) return null;
     const countryData = providers.IN || providers.US || Object.values(providers)[0];
@@ -83,6 +98,18 @@ const MovieDetails = ({ type = "movie" }) => {
     [...freeRaw, ...paidRaw].forEach(p => {
       if (!seen.has(p.provider_id)) {
         seen.add(p.provider_id);
+
+        // Match specific providers
+        if (providerMap[p.provider_name]) {
+          p.customLink = providerMap[p.provider_name](imdbId || title);
+          // Prefer passing IMDb for Plex and Pluto, Title for Tubi and Youtube
+          if (p.provider_name === 'Plex' || p.provider_name === 'Pluto TV') {
+            p.customLink = imdbId ? providerMap[p.provider_name](imdbId) : null;
+          } else {
+            p.customLink = providerMap[p.provider_name](title);
+          }
+        }
+
         uniqueProviders.push(p);
       }
     });
@@ -94,8 +121,6 @@ const MovieDetails = ({ type = "movie" }) => {
   };
 
   const displayProviders = getDisplayProviders();
-
-  const title = details.title || details.name;
   const rating = details.vote_average?.toFixed(1) || 'N/A';
   const runtime = details.runtime || details.episode_run_time?.[0];
   const year = (details.release_date || details.first_air_date)?.split('-')[0] || 'Unknown';
@@ -178,7 +203,9 @@ const MovieDetails = ({ type = "movie" }) => {
                     <div
                       key={p.provider_id}
                       onClick={() => {
-                        if (p.isFree) {
+                        if (p.customLink) {
+                          window.open(p.customLink, '_blank', 'noopener,noreferrer');
+                        } else if (p.isFree) {
                           setShowWebsitePlayer(true);
                         } else {
                           window.open(displayProviders.link, '_blank', 'noopener,noreferrer');
@@ -209,8 +236,16 @@ const MovieDetails = ({ type = "movie" }) => {
                 onClick={() => setShowWebsitePlayer(true)}
                 className="flex items-center gap-3 px-8 py-4 glass-primary border border-accent-gold/30 text-accent-gold font-bold rounded-full hover:bg-accent-gold/10 hover:shadow-[0_0_20px_rgba(244,63,94,0.2)] hover:scale-105 transition-all"
               >
-                <Play size={20} /> Play Movie
+                <Play size={20} /> Watch Free
               </button>
+              {displayProviders?.link && (
+                <button
+                  onClick={() => window.open(displayProviders.link, '_blank', 'noopener,noreferrer')}
+                  className="flex items-center gap-3 px-8 py-4 glass-light border border-border-color text-text-primary font-bold rounded-full hover:bg-border-color hover:scale-105 transition-all"
+                >
+                  <Play size={20} /> Watch on Provider
+                </button>
+              )}
               <button className="flex items-center justify-center w-14 h-14 glass-light border border-border-color text-text-primary font-bold rounded-full hover:bg-border-color hover:scale-105 transition-all">
                 <Plus size={24} />
               </button>
