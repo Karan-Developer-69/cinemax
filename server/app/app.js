@@ -7,8 +7,6 @@ const favoriteRoutes = require('./routes/favoriteMovie.router');
 const favoriteTvRoutes = require('./routes/favoriteTvShow.router');
 const adminRoutes = require('./routes/admin.router');
 
-const path = require('path')
-
 const cors = require('cors');
 
 app.use(cors({
@@ -19,12 +17,6 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-
-app.use(express.static(path.join(__dirname, './public')));
-
-app.get('/', (req, res) => {
-    res.sendFile('index.html')
-})
 
 app.use('/api/auth', authRoutes);
 app.use('/api/movie', movieRoutes);
