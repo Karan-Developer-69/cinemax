@@ -70,3 +70,18 @@ export const fetchPublicCustomMedia = async () => {
     const res = await axios.get(`${SERVER_API}/api/movie/custom-media`);
     return res.data;
 }
+
+export const fetchMovieCast = async (id) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/cast/${id}`);
+    return res.data;
+}
+
+export const fetchTvShowCast = async (id) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/cast-tv/${id}`);
+    return res.data;
+}
+
+export const fetchPersonDetails = async (id) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/person/${id}`);
+    return res.data;
+}

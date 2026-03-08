@@ -4,12 +4,15 @@ import MovieCard from '../components/ui/MovieCard';
 import MovieCardSkeleton from '../components/ui/MovieCardSkeleton';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllTvShows, getTrendingTvShows, getPopularTvShows, getTopRatedTvShows, getSearchedTvShows, resetTvShowsState } from '../store/slices/tvShowsSlice';
+import { useNavigate } from 'react-router-dom';
 
 const TvShows = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { allTvShows, trendingTvShows, popularTvShows, topRatedTvShows, searchedTvShows, loading, page } = useSelector((state) => state.tvShows);
     const [filter, setFilter] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
+    const [showSuggestions, setShowSuggestions] = useState(false);
     const triggered = useRef(false);
 
     useEffect(() => {
@@ -127,11 +130,42 @@ const TvShows = () => {
                         </div>
                         <input
                             type="text"
-                            className="w-full pl-10 pr-4 py-2.5 bg-secondary-bg border border-border-color rounded-xl focus:outline-none focus:border-accent-gold text-text-primary placeholder:text-text-secondary/50 font-medium transition-colors"
+                            className="w-full pl-10 pr-4 py-2.5 bg-secondary-bg border border-border-color rounded-xl focus:outline-none focus:border-accent-gold text-text-primary placeholder:text-text-secondary/50 font-medium transition-colors relative z-20"
                             placeholder="Search TV shows..."
                             value={searchQuery}
+                            onFocus={() => setShowSuggestions(true)}
+                            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
+                        {/* Search Suggestions Dropdown */}
+                        {showSuggestions && searchQuery.trim().length > 0 && (
+                            <div className="absolute top-full left-0 right-0 mt-2 bg-primary-bg border border-border-color rounded-xl overflow-hidden shadow-2xl z-30 max-h-[300px] overflow-y-auto">
+                                {loading.searchedTvShows ? (
+                                    <div className="p-4 text-center text-text-secondary text-sm">Searching...</div>
+                                ) : searchedTvShows && searchedTvShows.length > 0 ? (
+                                    searchedTvShows.slice(0, 5).map((show) => (
+                                        <div
+                                            key={show.id}
+                                            className="flex items-center gap-3 p-3 hover:bg-secondary-bg transition-colors cursor-pointer border-b border-border-color/50 last:border-0"
+                                            onClick={() => navigate(`/tv/${show.id}`)}
+                                        >
+                                            <img
+                                                src={show.imageSrc || 'https://via.placeholder.com/40x60'}
+                                                alt={show.title}
+                                                className="w-10 h-14 object-cover rounded"
+                                                loading="lazy"
+                                            />
+                                            <div className="flex flex-col">
+                                                <span className="text-text-primary font-bold text-sm line-clamp-1">{show.title}</span>
+                                                <span className="text-accent-gold text-xs">{show.year || 'Unknown'} • ★ {show.rating}</span>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="p-4 text-center text-text-secondary text-sm">No suggestions found.</div>
+                                )}
+                            </div>
+                        )}
                     </div>
                     <div className="flex gap-2 w-full sm:w-auto">
                         <div className="relative flex-1 sm:flex-none">

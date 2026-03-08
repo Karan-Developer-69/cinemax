@@ -20,4 +20,8 @@ router.get('/details-tv/:id', movieController.getTvShowDetails)
 // Custom Media Public Route
 router.get('/custom-media', movieController.getPublicCustomMedia)
 
+router.get('/cast/:id', movieController.getMovieCast)
+router.get('/cast-tv/:id', movieController.getTvShowCast)
+router.get('/person/:id', movieController.getPersonDetails)
+
 module.exports = router;

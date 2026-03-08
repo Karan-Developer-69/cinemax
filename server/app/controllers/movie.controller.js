@@ -237,3 +237,30 @@ exports.getPublicCustomMedia = async (req, res) => {
         res.status(500).json({ message: "Error fetching custom media", error: "Failed" });
     }
 };
+
+exports.getMovieCast = async (req, res) => {
+    try {
+        const cast = await movieProvider.getMovieCast(req.params.id);
+        res.status(200).json(cast);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}
+
+exports.getTvShowCast = async (req, res) => {
+    try {
+        const cast = await movieProvider.getTvShowCast(req.params.id);
+        res.status(200).json(cast);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}
+
+exports.getPersonDetails = async (req, res) => {
+    try {
+        const details = await movieProvider.getPersonDetails(req.params.id);
+        res.status(200).json(details);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+};

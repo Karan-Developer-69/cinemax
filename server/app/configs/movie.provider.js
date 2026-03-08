@@ -271,6 +271,27 @@ const getSearchedTvShow = async (query, page = 1) => {
     }));
 }
 
+const getMovieCast = async (id) => {
+    const res = await axios.get(`${BASE_URL}/3/movie/${id}/credits`, {
+        headers: { Authorization: 'Bearer ' + API_KEY }
+    });
+    return res.data.cast;
+}
+
+const getTvShowCast = async (id) => {
+    const res = await axios.get(`${BASE_URL}/3/tv/${id}/credits`, {
+        headers: { Authorization: 'Bearer ' + API_KEY }
+    });
+    return res.data.cast;
+}
+
+const getPersonDetails = async (id) => {
+    const res = await axios.get(`${BASE_URL}/3/person/${id}`, {
+        headers: { Authorization: 'Bearer ' + API_KEY }
+    });
+    return res.data;
+}
+
 module.exports = {
     getMovies,
     getTvShows,
@@ -284,5 +305,8 @@ module.exports = {
     getSearchedTvShow,
     getMovieDetails,
     getTvShowDetails,
-    getMovieTrailer
+    getMovieTrailer,
+    getMovieCast,
+    getTvShowCast,
+    getPersonDetails
 };

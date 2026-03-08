@@ -158,7 +158,7 @@ const AdminMediaTab = ({ type }) => {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {mediaItems.map(item => (
                     <div key={item._id} className="relative group bg-secondary-bg border border-border-color rounded-xl overflow-hidden aspect-[2/3]">
-                        <img src={item.posterUrl} alt={item.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-40 transition-opacity" />
+                        <img src={item.posterUrl} alt={item.title} loading="lazy" className="w-full h-full object-cover opacity-80 group-hover:opacity-40 transition-opacity" />
                         <div className="absolute inset-0 p-4 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-t from-[#000] via-[#000]/80 to-transparent">
                             <h3 className="text-neutral-50 font-bold text-sm truncate">{item.title}</h3>
                             <button

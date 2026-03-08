@@ -34,6 +34,7 @@ const MovieCard = ({ id, title, rating, year, imageSrc, type = "movie" }) => {
                 <img
                     src={imageSrc || fallbackImage}
                     alt={title || 'Media'}
+                    loading="lazy"
                     onError={(e) => { e.target.src = fallbackImage; }}
                     className="w-full h-full object-cover transition-transform  duration-700 ease-out group-hover:scale-105"
                 />

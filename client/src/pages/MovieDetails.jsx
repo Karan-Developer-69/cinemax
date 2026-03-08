@@ -1,14 +1,17 @@
 import { Play, Plus, Share2, Star, X } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { fetchMovieDetails, fetchTvShowDetails, fetchMovieTrailer } from '../utils/movieApi';
+import { fetchMovieDetails, fetchTvShowDetails, fetchMovieTrailer, fetchMovieCast, fetchTvShowCast } from '../utils/movieApi';
 import MovieDetailsSkeleton from '../components/ui/MovieDetailsSkeleton';
+import ActorModal from '../components/ui/ActorModal';
 
 const MovieDetails = ({ type = "movie" }) => {
   const { id } = useParams();
   const [details, setDetails] = useState(null);
+  const [cast, setCast] = useState([]);
   const [trailerKey, setTrailerKey] = useState(null);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [selectedActor, setSelectedActor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -21,8 +24,16 @@ const MovieDetails = ({ type = "movie" }) => {
         setTrailerKey(null);
         if (type === 'tv') {
           data = await fetchTvShowDetails(id);
+          try {
+            const castData = await fetchTvShowCast(id);
+            setCast(castData.slice(0, 10)); // Top 10 cast
+          } catch (e) { }
         } else {
           data = await fetchMovieDetails(id);
+          try {
+            const castData = await fetchMovieCast(id);
+            setCast(castData.slice(0, 10)); // Top 10 cast
+          } catch (e) { }
           try {
             const key = await fetchMovieTrailer(id);
             setTrailerKey(key);
@@ -88,6 +99,7 @@ const MovieDetails = ({ type = "movie" }) => {
               <img
                 src={posterUrl}
                 alt={`${title} Poster`}
+                loading="lazy"
                 onError={(e) => { e.target.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 450'%3E%3Crect width='300' height='450' fill='%2318181b'/%3E%3Ctext x='150' y='225' font-size='24' fill='white' text-anchor='middle' dominant-baseline='middle' font-weight='normal'%3ENo Image%3C/text%3E%3C/svg%3E`; }}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
@@ -152,9 +164,37 @@ const MovieDetails = ({ type = "movie" }) => {
                       <img
                         src={`https://image.tmdb.org/t/p/w200${company.logo_path}`}
                         alt={company.name}
+                        loading="lazy"
                         className="h-12 object-contain group-hover:scale-110 transition-transform"
                         style={{ filter: "drop-shadow(0px 0px 5px rgba(255,255,255,0.2))" }}
                       />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Cast Component */}
+            {cast && cast.length > 0 && (
+              <div className="mt-12">
+                <h3 className="text-2xl font-bold mb-6 text-text-primary">Top Cast</h3>
+                <div className="flex overflow-x-auto gap-4 pb-4 custom-scrollbar">
+                  {cast.filter(c => c.profile_path).map((actor) => (
+                    <div
+                      key={actor.id}
+                      onClick={() => setSelectedActor(actor.id)}
+                      className="flex flex-col w-32 shrink-0 group cursor-pointer"
+                    >
+                      <div className="w-full aspect-[2/3] rounded-xl overflow-hidden mb-3 border border-border-color group-hover:border-accent-gold transition-colors shadow-lg">
+                        <img
+                          src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`}
+                          alt={actor.name}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                      </div>
+                      <h4 className="font-bold text-text-primary text-sm line-clamp-1">{actor.name}</h4>
+                      <p className="text-xs text-text-secondary line-clamp-1">{actor.character}</p>
                     </div>
                   ))}
                 </div>
@@ -185,6 +225,11 @@ const MovieDetails = ({ type = "movie" }) => {
             ></iframe>
           </div>
         </div>
+      )}
+
+      {/* Actor Modal */}
+      {selectedActor && (
+        <ActorModal actorId={selectedActor} onClose={() => setSelectedActor(null)} />
       )}
     </div>
   );
