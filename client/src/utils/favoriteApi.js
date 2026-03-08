@@ -1,7 +1,8 @@
 import axios from "axios";
 
+// Movie Favorites API
 const api = axios.create({
-    baseURL: "https://cinemax-ub5q.onrender.com/api/favorites",
+    baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/favorites`,
     withCredentials: true,
 });
 
@@ -22,7 +23,7 @@ export const fetchFavorites = async (userId) => {
 
 // TV Show Favorites API
 const tvApi = axios.create({
-    baseURL: "https://cinemax-ub5q.onrender.com/api/favorites-tv",
+    baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/favorites-tv`,
     withCredentials: true,
 });
 

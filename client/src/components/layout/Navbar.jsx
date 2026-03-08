@@ -47,9 +47,9 @@ const Navbar = () => {
                 {/* Logo */}
                 <Link to="/" className="flex items-center gap-2 group">
                     <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center shadow-[0_0_15px_rgba(244,63,94,0.5)] group-hover:scale-110 transition-transform">
-                        <Play size={14} fill="white" className="ml-0.5 text-white" />
+                        <Play size={14} fill="currentColor" className="ml-0.5 text-neutral-50" />
                     </div>
-                    <span className="text-xl font-bold tracking-wider text-white">CINEMA<span className="text-accent-gold">X</span></span>
+                    <span className="text-xl font-bold tracking-wider text-text-primary">CINEMA<span className="text-accent-gold">X</span></span>
                 </Link>
 
                 {/* Desktop Navigation */}
@@ -61,8 +61,8 @@ const Navbar = () => {
                             className={clsx(
                                 'relative px-5 py-2 rounded-full font-medium text-sm transition-all duration-300',
                                 location.pathname === link.path
-                                    ? 'bg-white/10 text-white shadow-sm'
-                                    : 'text-text-secondary hover:text-white hover:bg-white/5'
+                                    ? 'bg-text-secondary/20 text-text-primary shadow-sm'
+                                    : 'text-text-secondary hover:text-text-primary hover:bg-text-secondary/10'
                             )}
                         >
                             {link.name}
@@ -87,12 +87,12 @@ const Navbar = () => {
                 <div className="flex gap-3 md:gap-4 items-center flex-row">
                     <button
                         onClick={() => dispatch(toggleTheme())}
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-white hover:bg-white/10 transition-all duration-300"
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-text-secondary/20 transition-all duration-300"
                     >
                         {themeMode === 'light' ? <Moon size={20} /> : <Sun size={20} />}
                     </button>
                     {user ? (
-                        <div className="hidden sm:flex items-center gap-3 pl-2 pr-4 py-1.5 rounded-full glass-light border border-white/10 text-sm font-medium text-white transition-all">
+                        <div className="hidden sm:flex items-center gap-3 pl-2 pr-4 py-1.5 rounded-full glass-light border border-border-color text-sm font-medium text-text-primary transition-all">
                             <div className="flex items-center gap-2 cursor-pointer group">
                                 <div className="w-7 h-7 rounded-full bg-accent-gold flex items-center justify-center text-black font-bold shadow-[0_0_10px_rgba(255,215,0,0.5)]">
                                     {user.username?.charAt(0).toUpperCase()}
@@ -107,8 +107,8 @@ const Navbar = () => {
                             </button>
                         </div>
                     ) : (
-                        <Link to="/login" className="hidden sm:flex items-center gap-2 pl-3 pr-4 py-2 rounded-full glass-light border border-border-color hover:border-accent-gold hover:text-white transition-all text-sm font-medium text-text-secondary group">
-                            <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-accent-gold transition-colors">
+                        <Link to="/login" className="hidden sm:flex items-center gap-2 pl-3 pr-4 py-2 rounded-full glass-light border border-border-color hover:border-accent-gold hover:text-text-primary transition-all text-sm font-medium text-text-secondary group">
+                            <div className="w-6 h-6 rounded-full bg-text-secondary/20 flex items-center justify-center group-hover:bg-accent-gold transition-colors">
                                 <User size={14} className="group-hover:text-black" />
                             </div>
                             Sign In
@@ -139,7 +139,7 @@ const Navbar = () => {
                             to={link.path}
                             className={clsx(
                                 'px-6 py-4 rounded-xl font-medium transition-colors text-center',
-                                location.pathname === link.path ? 'bg-accent-gold/10 text-accent-gold' : 'text-text-primary hover:bg-white/5'
+                                location.pathname === link.path ? 'bg-accent-gold/10 text-accent-gold' : 'text-text-primary hover:bg-text-secondary/10'
                             )}
                             onClick={() => setIsMobileMenuOpen(false)}
                         >
@@ -170,7 +170,7 @@ const Navbar = () => {
                     ) : (
                         <Link
                             to="/login"
-                            className="mt-4 px-6 py-4 rounded-xl bg-gradient-primary text-white font-bold text-center"
+                            className="mt-4 px-6 py-4 rounded-xl bg-gradient-primary text-neutral-50 font-bold text-center"
                             onClick={() => setIsMobileMenuOpen(false)}
                         >
                             Sign In to CinemaX

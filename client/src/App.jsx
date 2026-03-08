@@ -45,7 +45,7 @@ const App = () => {
   }, [themeMode]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-primary-bg text-white font-bold text-xl">Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center bg-primary-bg text-[var(--color-text-primary)] font-bold text-xl">Loading...</div>;
   }
 
   return (
@@ -69,9 +69,9 @@ const App = () => {
         position="bottom-center"
         toastOptions={{
           style: {
-            background: '#18181b',
-            color: '#fff',
-            border: '1px solid rgba(255,255,255,0.1)',
+            background: 'var(--color-secondary-bg)',
+            color: 'var(--color-text-primary)',
+            border: '1px solid var(--color-border-color)',
             borderRadius: '16px',
           },
         }}

@@ -84,6 +84,11 @@
         -webkit-backdrop-filter: blur(16px);
     }
 
+    /* light mode variant for glass-light (light frost) */
+    .light .glass-light {
+        background: rgba(248, 250, 252, 0.6); /* slate-50 @ 60% */
+    }
+
     .glass-dark {
         background: rgba(0, 0, 0, 0.7);
         backdrop-filter: blur(24px);
@@ -95,6 +100,57 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+    }
+
+    /* theme-aware utility overrides for light mode */
+    /* map common dark-mode classes to appropriate light equivalents using CSS variables */
+    .light .text-white {
+        color: var(--color-white) !important;
+    }
+
+    .light .bg-black {
+        background-color: var(--color-black) !important;
+    }
+
+    /* handle opacity variants of black background */
+    .light .bg-black\/20 {
+        background-color: rgba(248, 250, 252, 0.2) !important;
+    }
+    .light .bg-black\/40 {
+        background-color: rgba(248, 250, 252, 0.4) !important; /* slate-50 at 40% */
+    }
+    .light .bg-black\/50 {
+        background-color: rgba(248, 250, 252, 0.5) !important;
+    }
+    .light .bg-black\/60 {
+        background-color: rgba(248, 250, 252, 0.6) !important;
+    }
+    .light .bg-black\/90 {
+        background-color: rgba(248, 250, 252, 0.9) !important;
+    }
+
+    /* borders that were white should be dark in light mode */
+    .light .border-white\/5 {
+        border-color: rgba(15, 23, 42, 0.05) !important; /* slate-900 at 5% */
+    }
+    .light .border-white\/10 {
+        border-color: rgba(15, 23, 42, 0.1) !important; /* slate-900 at 10% */
+    }
+
+    /* optionally override text opacity utilities */
+    .light .text-white\/70 {
+        color: rgba(15, 23, 42, 0.7) !important;
+    }
+
+    /* remap semi-transparent white backgrounds to dark slate variants in light mode */
+    .light .bg-white\/5 {
+        background-color: rgba(15, 23, 42, 0.05) !important;
+    }
+    .light .bg-white\/10 {
+        background-color: rgba(15, 23, 42, 0.1) !important;
+    }
+    .light .bg-white\/30 {
+        background-color: rgba(15, 23, 42, 0.3) !important;
     }
 
     .text-gradient-accent {

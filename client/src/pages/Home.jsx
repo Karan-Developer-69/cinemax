@@ -42,8 +42,10 @@ const Home = () => {
 
     return (
         <div className="w-full">
+            <div className="absolute z-10 inset-0 h-80 bg-gradient-to-t from-transparent via-primary-bg/20 to-primary-bg"></div>
             {/* HERO SECTION */}
             <section className="relative h-screen w-full flex items-center pt-20 overflow-hidden">
+
                 {currentHero ? (
                     <>
                         <div
@@ -53,10 +55,9 @@ const Home = () => {
                                 backgroundImage: `url('${currentHero.imageSrc ? currentHero.imageSrc.replace('w200', 'original') : ''}')`,
                             }}
                         >
-                            <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
                         </div>
 
-                        <div className="absolute inset-0 bg-gradient-to-t from-primary-bg via-primary-bg/70 to-transparent"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-primary-bg via-primary-bg/20 to-transparent"></div>
                         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-primary-bg to-transparent z-10"></div>
 
                         <div className="relative max-w-[1400px] w-full mx-auto px-6 md:px-8 z-20 flex flex-col justify-end pb-32 h-full">
@@ -65,7 +66,7 @@ const Home = () => {
                                     Trending #{currentHeroIndex + 1}
                                 </span>
 
-                                <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight tracking-tighter drop-shadow-2xl text-white">
+                                <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight tracking-tighter drop-shadow-2xl text-neutral-50">
                                     {currentHero.title}
                                 </h1>
 
@@ -73,19 +74,19 @@ const Home = () => {
                                     <div className="flex items-center gap-1 text-accent-gold font-bold bg-accent-gold/10 px-3 py-1 rounded-full border border-accent-gold/20">
                                         <span>★</span> {currentHero.rating}
                                     </div>
-                                    <span className="text-white/90 font-medium">{currentHero.year}</span>
-                                    <span className="px-2 py-0.5 border border-white/20 rounded text-text-secondary text-xs font-bold">HD</span>
+                                    <span className="text-neutral-50/90 font-medium">{currentHero.year}</span>
+                                    <span className="px-2 py-0.5 border border-neutral-50/20 rounded text-neutral-50/80 text-xs font-bold">HD</span>
                                 </div>
 
-                                <p className="text-lg md:text-xl text-zinc-300 mb-10 max-w-2xl leading-relaxed drop-shadow-md font-light">
+                                <p className="text-lg md:text-xl text-neutral-50/80 mb-10 max-w-2xl leading-relaxed drop-shadow-md font-light">
                                     Experience the thrills of this top trending masterpiece. Discover a world of brilliant storytelling and cinematic excellence directly from the API.
                                 </p>
 
                                 <div className="flex flex-wrap gap-4">
-                                    <Link to={`/movie/${currentHero.id}`} className="flex items-center justify-center gap-3 px-8 py-4 bg-white text-black font-extrabold rounded-full hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:scale-105 transition-all text-lg">
+                                    <Link to={`/movie/${currentHero.id}`} className="flex items-center justify-center gap-3 px-8 py-4 bg-text-primary text-primary-bg font-extrabold rounded-full hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:scale-105 transition-all text-lg">
                                         <Play size={20} fill="currentColor" /> Watch Now
                                     </Link>
-                                    <button className="flex items-center justify-center gap-2 px-8 py-4 glass-light border border-white/10 text-white font-bold rounded-full hover:bg-white/10 hover:border-accent-gold hover:scale-105 transition-all text-lg backdrop-blur-md">
+                                    <button className="flex items-center justify-center gap-2 px-8 py-4 bg-secondary-bg/40 border border-border-color text-text-primary font-bold rounded-full hover:bg-text-secondary/20 hover:border-accent-gold hover:scale-105 transition-all text-lg backdrop-blur-md">
                                         <Plus size={20} /> My List
                                     </button>
                                 </div>
@@ -121,14 +122,14 @@ const Home = () => {
                             </div>
                             <input
                                 type="text"
-                                className="w-full pl-10 pr-4 py-2 bg-black/40 border border-border-color rounded-full focus:outline-none focus:border-accent-gold text-white placeholder:text-text-secondary/50 font-medium transition-colors text-sm"
+                                className="w-full pl-10 pr-4 py-2 bg-secondary-bg border border-border-color rounded-full focus:outline-none focus:border-accent-gold text-text-primary placeholder:text-text-secondary/50 font-medium transition-colors text-sm"
                                 placeholder="Search trending..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 onKeyDown={handleSearch}
                             />
                         </div>
-                        <Link to="/movies" className="hidden sm:inline-block text-accent-gold hover:text-white transition-colors font-semibold text-sm tracking-wide uppercase whitespace-nowrap">
+                        <Link to="/movies" className="hidden sm:inline-block text-accent-gold hover:text-text-primary transition-colors font-semibold text-sm tracking-wide uppercase whitespace-nowrap">
                             Explore All
                         </Link>
                     </div>
@@ -160,16 +161,16 @@ const Home = () => {
 
                         <div className="absolute inset-0 p-8 md:p-16 flex flex-col justify-center max-w-2xl">
                             <span className="text-accent-gold font-bold tracking-widest text-sm uppercase mb-4 block">Director's Cut</span>
-                            <h2 className="text-4xl md:text-6xl font-black mb-6 leading-tight drop-shadow-xl text-white uppercase">
+                            <h2 className="text-4xl md:text-6xl font-black mb-6 leading-tight drop-shadow-xl text-neutral-50 uppercase">
                                 {spotlightMovie.title}
                             </h2>
 
-                            <div className="flex items-center gap-1 text-accent-gold font-bold mb-4 bg-black/40 w-fit px-3 py-1 rounded-full border border-accent-gold/20">
+                            <div className="flex items-center gap-1 text-accent-gold font-bold mb-4 bg-[#000]/40 w-fit px-3 py-1 rounded-full border border-accent-gold/20">
                                 <span>★</span> {spotlightMovie.rating}
                             </div>
 
                             <div className="flex flex-wrap gap-4 mt-6">
-                                <Link to={`/movie/${spotlightMovie.id}`} className="flex items-center justify-center gap-3 px-8 py-4 bg-gradient-primary text-white font-bold rounded-full shadow-[0_0_30px_rgba(244,63,94,0.5)] hover:scale-105 transition-all w-full sm:w-auto text-center">
+                                <Link to={`/movie/${spotlightMovie.id}`} className="flex items-center justify-center gap-3 px-8 py-4 bg-gradient-primary text-neutral-50 font-bold rounded-full shadow-[0_0_30px_rgba(244,63,94,0.5)] hover:scale-105 transition-all w-full sm:w-auto text-center">
                                     <Play size={20} fill="currentColor" /> Watch Spotlight
                                 </Link>
                             </div>
@@ -186,7 +187,7 @@ const Home = () => {
                     <h2 className="text-3xl font-extrabold tracking-tight">
                         Top Rated
                     </h2>
-                    <Link to="/movies" className="text-accent-gold hover:text-white transition-colors font-semibold text-sm tracking-wide uppercase">
+                    <Link to="/movies" className="text-accent-gold hover:text-text-primary transition-colors font-semibold text-sm tracking-wide uppercase">
                         See Top 100
                     </Link>
                 </div>

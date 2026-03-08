@@ -3,9 +3,9 @@ import { fetchAllMovies, fetchTrendingMovies, fetchPopularMovies, fetchTopRatedM
 
 export const getAllMovies = createAsyncThunk(
     "movie/getAllMovies",
-    async () => {
-        const data = await fetchAllMovies();
-        return data;
+    async (page = 1) => {
+        const data = await fetchAllMovies(page);
+        return { data, page };
     }
 );
 export const getTrendingMovies = createAsyncThunk(
@@ -33,7 +33,7 @@ export const getTopRatedMovies = createAsyncThunk(
 );
 export const getSearchedMovies = createAsyncThunk(
     "movie/getSearchedMovies",
-    async (query) => {
+    async ({ query }) => {
         const data = await fetchSearchedMovies(query);
         return data;
     }
@@ -54,6 +54,7 @@ const initialState = {
     topRatedMovies: [],
     searchedMovies: [],
     customMedia: [],
+    page: 1,
     loading: {
         allMovies: false,
         trendingMovies: false,
@@ -67,7 +68,16 @@ const initialState = {
 const movieSlice = createSlice({
     name: "movie",
     initialState,
-    reducers: {},
+    reducers: {
+        resetMoviesState: (state) => {
+            state.allMovies = [];
+            state.trendingMovies = [];
+            state.popularMovies = [];
+            state.topRatedMovies = [];
+            state.searchedMovies = [];
+            state.page = 1;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getAllMovies.pending, (state) => {
@@ -75,7 +85,12 @@ const movieSlice = createSlice({
             })
             .addCase(getAllMovies.fulfilled, (state, action) => {
                 state.loading.allMovies = false;
-                state.allMovies = action.payload;
+                if (action.payload.page === 1) {
+                    state.allMovies = action.payload.data;
+                } else {
+                    state.allMovies = [...state.allMovies, ...action.payload.data];
+                }
+                state.page = action.payload.page;
             })
             .addCase(getAllMovies.rejected, (state) => {
                 state.loading.allMovies = false;
@@ -132,5 +147,5 @@ const movieSlice = createSlice({
             });
     }
 });
-
+export const { resetMoviesState } = movieSlice.actions;
 export default movieSlice.reducer;

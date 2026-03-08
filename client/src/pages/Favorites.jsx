@@ -73,24 +73,24 @@ const Favorites = () => {
                 </div>
             ) : !user ? (
                 <div className="text-center py-32 flex flex-col items-center justify-center animate-fade-in-up">
-                    <div className="w-32 h-32 glass-light rounded-full flex items-center justify-center mb-8 text-white border border-white/10 shadow-[0_0_30px_rgba(244,63,94,0.3)]">
+                    <div className="w-32 h-32 glass-light rounded-full flex items-center justify-center mb-8 text-text-primary border border-border-color shadow-[0_0_30px_rgba(244,63,94,0.3)]">
                         <Heart size={44} fill="currentColor" className="text-accent-gold" />
                     </div>
-                    <h2 className="text-3xl font-extrabold mb-3 tracking-tight">Sign in to view favorites</h2>
+                    <h2 className="text-3xl font-extrabold mb-3 tracking-tight text-text-primary">Sign in to view favorites</h2>
                     <p className="text-text-secondary text-lg max-w-sm mb-10 font-medium">
                         You need an account to save and collect movies and TV shows.
                     </p>
                 </div>
             ) : !hasFavorites ? (
                 <div className="text-center py-32 flex flex-col items-center justify-center animate-fade-in-up">
-                    <div className="w-32 h-32 glass-light rounded-full flex items-center justify-center mb-8 text-white border border-white/10 shadow-[0_0_30px_rgba(244,63,94,0.3)]">
+                    <div className="w-32 h-32 glass-light rounded-full flex items-center justify-center mb-8 text-text-primary border border-border-color shadow-[0_0_30px_rgba(244,63,94,0.3)]">
                         <Heart size={44} fill="currentColor" className="text-accent-gold" />
                     </div>
-                    <h2 className="text-3xl font-extrabold mb-3 tracking-tight">No favorites yet</h2>
+                    <h2 className="text-3xl font-extrabold mb-3 tracking-tight text-text-primary">No favorites yet</h2>
                     <p className="text-text-secondary text-lg max-w-sm mb-10 font-medium">
                         Start adding movies and shows to your favorites to easily find them later.
                     </p>
-                    <button className="px-10 py-4 bg-white text-black font-extrabold rounded-full hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 transition-all">
+                    <button className="px-10 py-4 bg-text-primary text-primary-bg font-extrabold rounded-full hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 transition-all">
                         Explore Movies
                     </button>
                 </div>

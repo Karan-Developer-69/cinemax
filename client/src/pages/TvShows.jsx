@@ -1,15 +1,77 @@
-import { useEffect, useState } from 'react';
-import { Filter, ChevronDown, Search } from 'lucide-react';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { Filter, Search } from 'lucide-react';
 import MovieCard from '../components/ui/MovieCard';
 import MovieCardSkeleton from '../components/ui/MovieCardSkeleton';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllTvShows, getTrendingTvShows, getPopularTvShows, getTopRatedTvShows, getSearchedTvShows } from '../store/slices/tvShowsSlice';
+import { getAllTvShows, getTrendingTvShows, getPopularTvShows, getTopRatedTvShows, getSearchedTvShows, resetTvShowsState } from '../store/slices/tvShowsSlice';
 
 const TvShows = () => {
     const dispatch = useDispatch();
-    const { allTvShows, trendingTvShows, popularTvShows, topRatedTvShows, searchedTvShows, loading } = useSelector((state) => state.tvShows);
+    const { allTvShows, trendingTvShows, popularTvShows, topRatedTvShows, searchedTvShows, loading, page } = useSelector((state) => state.tvShows);
     const [filter, setFilter] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
+    const triggered = useRef(false);
+
+    useEffect(() => {
+        return () => {
+            dispatch(resetTvShowsState?.() || { type: 'NOOP' });
+        };
+    }, [dispatch]);
+
+    const getActiveData = useCallback(() => {
+        if (searchQuery.trim().length > 0) {
+            return { data: searchedTvShows, isLoading: loading.searchedTvShows };
+        }
+        switch (filter) {
+            case 'trending': return { data: trendingTvShows, isLoading: loading.trendingTvShows };
+            case 'popular': return { data: popularTvShows, isLoading: loading.popularTvShows };
+            case 'top_rated': return { data: topRatedTvShows, isLoading: loading.topRatedTvShows };
+            case 'all':
+            default: return { data: allTvShows, isLoading: loading.allTvShows };
+        }
+    }, [searchQuery, filter, searchedTvShows, trendingTvShows, popularTvShows, topRatedTvShows, allTvShows, loading]);
+
+    const { data: currentShows, isLoading } = getActiveData();
+
+    useEffect(() => {
+        if (!isLoading) {
+            triggered.current = false;
+        }
+    }, [isLoading]);
+
+    const handleLoadMore = useCallback(() => {
+        if (isLoading) return;
+        const nextPage = page + 1;
+        if (searchQuery.trim().length > 0) {
+            dispatch(getSearchedTvShows({ query: searchQuery, page: nextPage }));
+        } else {
+            switch (filter) {
+                case 'trending': dispatch(getTrendingTvShows(nextPage)); break;
+                case 'popular': dispatch(getPopularTvShows(nextPage)); break;
+                case 'top_rated': dispatch(getTopRatedTvShows(nextPage)); break;
+                case 'all':
+                default: dispatch(getAllTvShows(nextPage)); break;
+            }
+        }
+    }, [dispatch, isLoading, page, searchQuery, filter]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollTop = window.scrollY;
+            const scrollHeight = document.documentElement.scrollHeight;
+            const clientHeight = window.innerHeight;
+
+            const percent = Math.floor((scrollTop / (scrollHeight - clientHeight)) * 100);
+
+            if (percent === 99 && !triggered.current && !isLoading) {
+                triggered.current = true;
+                handleLoadMore();
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [handleLoadMore, isLoading]);
 
     useEffect(() => {
         dispatch(getAllTvShows());
@@ -18,13 +80,16 @@ const TvShows = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             if (searchQuery.trim().length > 0) {
-                dispatch(getSearchedTvShows(searchQuery));
+                dispatch(resetTvShowsState?.() || { type: 'NOOP' });
+                dispatch(getSearchedTvShows({ query: searchQuery, page: 1 }));
             }
         }, 500);
         return () => clearTimeout(timer);
     }, [searchQuery, dispatch]);
 
     useEffect(() => {
+        dispatch(resetTvShowsState?.() || { type: 'NOOP' });
+        triggered.current = false;
         switch (filter) {
             case 'all':
                 dispatch(getAllTvShows());
@@ -43,20 +108,6 @@ const TvShows = () => {
         }
     }, [filter, dispatch]);
 
-    const getActiveData = () => {
-        if (searchQuery.trim().length > 0) {
-            return { data: searchedTvShows, isLoading: loading.searchedTvShows };
-        }
-        switch (filter) {
-            case 'trending': return { data: trendingTvShows, isLoading: loading.trendingTvShows };
-            case 'popular': return { data: popularTvShows, isLoading: loading.popularTvShows };
-            case 'top_rated': return { data: topRatedTvShows, isLoading: loading.topRatedTvShows };
-            case 'all':
-            default: return { data: allTvShows, isLoading: loading.allTvShows };
-        }
-    };
-
-    const { data: currentShows, isLoading } = getActiveData();
 
     return (
         <div className="pt-32 max-w-[1400px] mx-auto px-6 md:px-8 pb-20 w-full min-h-screen">
@@ -76,7 +127,7 @@ const TvShows = () => {
                         </div>
                         <input
                             type="text"
-                            className="w-full pl-10 pr-4 py-2.5 bg-black/40 border border-border-color rounded-xl focus:outline-none focus:border-accent-gold text-white placeholder:text-text-secondary/50 font-medium transition-colors"
+                            className="w-full pl-10 pr-4 py-2.5 bg-secondary-bg border border-border-color rounded-xl focus:outline-none focus:border-accent-gold text-text-primary placeholder:text-text-secondary/50 font-medium transition-colors"
                             placeholder="Search TV shows..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -84,11 +135,11 @@ const TvShows = () => {
                     </div>
                     <div className="flex gap-2 w-full sm:w-auto">
                         <div className="relative flex-1 sm:flex-none">
-                            <select value={filter} onChange={e => setFilter(e.target.value)} name='filter' id='filter' className="filter appearance-none w-full pl-5 pr-12 py-2.5 glass-light border border-border-color rounded-xl text-sm font-semibold text-white focus:outline-none focus:border-accent-gold transition-colors cursor-pointer">
-                                <option value="all" className="bg-zinc-900">All Shows</option>
-                                <option value="trending" className="bg-zinc-900">Trending</option>
-                                <option value="popular" className="bg-zinc-900">Popular</option>
-                                <option value="top_rated" className="bg-zinc-900">Top Rated</option>
+                            <select value={filter} onChange={e => setFilter(e.target.value)} name='filter' id='filter' className="filter appearance-none w-full pl-5 pr-12 py-2.5 glass-light border border-border-color rounded-xl text-sm font-semibold text-text-primary focus:outline-none focus:border-accent-gold transition-colors cursor-pointer">
+                                <option value="all" className="bg-primary-bg">All Shows</option>
+                                <option value="trending" className="bg-primary-bg">Trending</option>
+                                <option value="popular" className="bg-primary-bg">Popular</option>
+                                <option value="top_rated" className="bg-primary-bg">Top Rated</option>
                             </select>
                             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-text-secondary">
                                 <Filter size={16} />
@@ -100,14 +151,19 @@ const TvShows = () => {
 
             {/* Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-6">
-                {isLoading ? (
+                {isLoading && (!currentShows || currentShows.length === 0) ? (
                     Array.from({ length: 14 }).map((_, i) => (
-                        <MovieCardSkeleton key={i} />
+                        <MovieCardSkeleton key={`initial-${i}`} />
                     ))
                 ) : currentShows && currentShows.length > 0 ? (
-                    currentShows.map((show) => (
-                        <MovieCard key={show.id} type="tv" {...show} />
-                    ))
+                    <>
+                        {currentShows.map((show) => (
+                            <MovieCard key={show.id} type="tv" {...show} />
+                        ))}
+                        {isLoading && Array.from({ length: 7 }).map((_, i) => (
+                            <MovieCardSkeleton key={`loading-${i}`} />
+                        ))}
+                    </>
                 ) : (
                     <div className="col-span-full py-20 text-center text-text-secondary">
                         <h2 className="text-2xl font-bold mb-2">No TV shows found</h2>
@@ -115,15 +171,6 @@ const TvShows = () => {
                     </div>
                 )}
             </div>
-
-            {/* Load More */}
-            {!searchQuery && currentShows && currentShows.length > 0 && (
-                <div className="mt-16 flex justify-center">
-                    <button className="px-10 py-4 glass-light border border-white/10 text-white font-bold rounded-full hover:bg-white/10 transition-all hover:scale-105">
-                        Load More Series
-                    </button>
-                </div>
-            )}
         </div>
     );
 };

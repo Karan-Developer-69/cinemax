@@ -39,7 +39,7 @@ const MovieCard = ({ id, title, rating, year, imageSrc, type = "movie" }) => {
                 />
 
                 {/* Top left badge */}
-                <div className="absolute top-3 left-3 px-2.5 py-1 glass-dark rounded-md text-xs font-bold text-white tracking-wide border border-white/10">
+                <div className="absolute top-3 left-3 px-2.5 py-1 glass-dark rounded-md text-xs font-bold text-neutral-50 tracking-wide border border-neutral-50/10">
                     ★ {rating !== undefined && rating !== null ? rating : 'N/A'}
                 </div>
 
@@ -50,23 +50,23 @@ const MovieCard = ({ id, title, rating, year, imageSrc, type = "movie" }) => {
                         "absolute top-3 right-3 w-8 h-8 rounded-full glass-dark border flex items-center justify-center transition-colors z-20",
                         isFavorite
                             ? "border-red-500 bg-red-500/20 text-red-500 hover:bg-red-500/30"
-                            : "border-white/10 text-white/70 hover:text-accent-gold hover:bg-white/10"
+                            : "border-neutral-50/10 text-neutral-300 hover:text-accent-gold hover:bg-neutral-50/10"
                     )}
                 >
                     <Heart size={14} fill={isFavorite ? "currentColor" : "none"} />
                 </button>
 
                 {/* Hover Action Overlay */}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10 backdrop-blur-[2px]">
-                    <div className="w-14 h-14 rounded-full bg-accent-gold/90 text-white flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300 delay-75">
+                <div className="absolute inset-0 bg-[#000]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10 backdrop-blur-[2px]">
+                    <div className="w-14 h-14 rounded-full bg-accent-gold/90 text-neutral-50 flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300 delay-75">
                         <Play size={24} fill="currentColor" className="ml-1" />
                     </div>
                 </div>
 
                 {/* Bottom Details Bar */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 pt-12 bg-gradient-to-t from-black via-black/80 to-transparent flex flex-col justify-end z-10">
-                    <h3 className="font-bold text-base text-white truncate drop-shadow-md">{title || "Unknown Title"}</h3>
-                    <p className="text-text-secondary text-sm drop-shadow-md">{year || "N/A"}</p>
+                <div className="absolute bottom-0 left-0 right-0 p-4 pt-12 bg-gradient-to-t from-[#000] via-[#000]/80 to-transparent flex flex-col justify-end z-10">
+                    <h3 className="font-bold text-base text-neutral-50 truncate drop-shadow-md">{title || "Unknown Title"}</h3>
+                    <p className="text-neutral-300 text-sm drop-shadow-md">{year || "N/A"}</p>
                 </div>
             </div>
         </Link>

@@ -1,14 +1,17 @@
 const axios = require('axios');
-const API_KEY = process.env.API_KEY || "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1NTlmOTBhNzg3MTJlZGY1ZGExODZlMWIxM2Q4MzEyYiIsIm5iZiI6MTc2NDE0NjA0OS40MDIsInN1YiI6IjY5MjZiYjgxOTk1YjQyMzgxOTMwY2MxMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.3Bc5f-NBwmQ__u6YUXpHuhz4K9CNkpQ4xdMNLXUH2Js";
-const BASE_URL = process.env.BASE_URL || "https://api.themoviedb.org";
+const API_KEY = process.env.TMDB_API_KEY || "";
+const BASE_URL = process.env.TMDB_BASE_URL || process.env.BASE_URL || "https://api.themoviedb.org";
 
-const getMovies = async () => {
+const getMovies = async (page = 1) => {
     const options = {
         method: 'GET',
-        url: BASE_URL + '/3/discover/movie',
+        url: `${BASE_URL}/3/discover/movie?page=${page}`,
         headers: {
             accept: 'application/json',
             Authorization: 'Bearer ' + API_KEY
+        },
+        params: {
+            page: page
         }
     };
 
@@ -24,13 +27,16 @@ const getMovies = async () => {
 
 }
 
-const getTvShows = async () => {
+const getTvShows = async (page = 1) => {
     const options = {
         method: 'GET',
         url: BASE_URL + '/3/discover/tv',
         headers: {
             accept: 'application/json',
             Authorization: 'Bearer ' + API_KEY
+        },
+        params: {
+            page: page
         }
     };
 
@@ -44,13 +50,16 @@ const getTvShows = async () => {
     }));
 }
 
-const getTrendingMovies = async () => {
+const getTrendingMovies = async (page = 1) => {
     const options = {
         method: 'GET',
         url: BASE_URL + '/3/trending/movie/day',
         headers: {
             accept: 'application/json',
             Authorization: 'Bearer ' + API_KEY
+        },
+        params: {
+            page: page
         }
     };
 
@@ -104,13 +113,16 @@ const getTvShowDetails = async (id) => {
 }
 
 
-const getTrendingTvShows = async () => {
+const getTrendingTvShows = async (page = 1) => {
     const options = {
         method: 'GET',
         url: BASE_URL + '/3/trending/tv/day',
         headers: {
             accept: 'application/json',
             Authorization: 'Bearer ' + API_KEY
+        },
+        params: {
+            page: page
         }
     };
 
@@ -124,13 +136,16 @@ const getTrendingTvShows = async () => {
     }));
 }
 
-const getPopularMovies = async () => {
+const getPopularMovies = async (page = 1) => {
     const options = {
         method: 'GET',
         url: BASE_URL + '/3/movie/popular',
         headers: {
             accept: 'application/json',
             Authorization: 'Bearer ' + API_KEY
+        },
+        params: {
+            page: page
         }
     };
 
@@ -144,13 +159,16 @@ const getPopularMovies = async () => {
     }));
 }
 
-const getTopRatedMovies = async () => {
+const getTopRatedMovies = async (page = 1) => {
     const options = {
         method: 'GET',
         url: BASE_URL + '/3/movie/top_rated',
         headers: {
             accept: 'application/json',
             Authorization: 'Bearer ' + API_KEY
+        },
+        params: {
+            page: page
         }
     };
 
@@ -164,13 +182,16 @@ const getTopRatedMovies = async () => {
     }));
 }
 
-const getPopularTvShows = async () => {
+const getPopularTvShows = async (page = 1) => {
     const options = {
         method: 'GET',
         url: BASE_URL + '/3/tv/popular',
         headers: {
             accept: 'application/json',
             Authorization: 'Bearer ' + API_KEY
+        },
+        params: {
+            page: page
         }
     };
 
@@ -184,13 +205,16 @@ const getPopularTvShows = async () => {
     }));
 }
 
-const getTopRatedTvShows = async () => {
+const getTopRatedTvShows = async (page = 1) => {
     const options = {
         method: 'GET',
         url: BASE_URL + '/3/tv/top_rated',
         headers: {
             accept: 'application/json',
             Authorization: 'Bearer ' + API_KEY
+        },
+        params: {
+            page: page
         }
     };
 
@@ -203,16 +227,16 @@ const getTopRatedTvShows = async () => {
         imageSrc: `https://image.tmdb.org/t/p/w200${show.poster_path}`
     }));
 }
-const getSearchedMovie = async (query) => {
+const getSearchedMovie = async (query, page = 1) => {
     const res = await axios.get(
-        "https://api.themoviedb.org/3/search/movie",
+        `${BASE_URL}/3/search/movie`,
         {
             headers: {
                 Authorization: 'Bearer ' + API_KEY
             },
             params: {
-                api_key: API_KEY,
                 query,
+                page
             }
         }
     );
@@ -225,16 +249,16 @@ const getSearchedMovie = async (query) => {
     }));
 }
 
-const getSearchedTvShow = async (query) => {
+const getSearchedTvShow = async (query, page = 1) => {
     const res = await axios.get(
-        "https://api.themoviedb.org/3/search/tv",
+        `${BASE_URL}/3/search/tv`,
         {
             headers: {
                 Authorization: 'Bearer ' + API_KEY
             },
             params: {
-                api_key: API_KEY,
                 query,
+                page
             }
         }
     );

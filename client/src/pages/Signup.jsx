@@ -34,17 +34,17 @@ const Signup = () => {
             <div className="absolute top-1/4 -right-20 w-[30rem] h-[30rem] bg-accent-gold/20 rounded-full blur-[100px] pointer-events-none" />
             <div className="absolute bottom-1/4 -left-20 w-96 h-96 bg-accent-purple/20 rounded-full blur-[120px] pointer-events-none" />
 
-            <div className="w-full max-w-md glass-light border border-white/10 rounded-3xl p-8 md:p-10 relative z-10 shadow-2xl animate-fade-in-up">
+            <div className="w-full max-w-md glass-light border border-border-color rounded-3xl p-8 md:p-10 relative z-10 shadow-2xl animate-fade-in-up">
                 <div className="flex justify-center mb-8">
                     <Link to="/" className="flex items-center gap-2">
                         <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center shadow-[0_0_20px_rgba(244,63,94,0.5)]">
-                            <Play size={18} fill="white" className="ml-1 text-white" />
+                            <Play size={18} fill="currentColor" className="ml-1 text-neutral-50" />
                         </div>
-                        <span className="text-2xl font-bold tracking-wider text-white">CINEMA<span className="text-accent-gold">X</span></span>
+                        <span className="text-2xl font-bold tracking-wider text-text-primary">CINEMA<span className="text-accent-gold">X</span></span>
                     </Link>
                 </div>
 
-                <h2 className="text-3xl font-extrabold text-center mb-2 tracking-tight">Create Account</h2>
+                <h2 className="text-3xl font-extrabold text-center mb-2 tracking-tight text-text-primary">Create Account</h2>
                 <p className="text-text-secondary text-center mb-8 font-medium">Join CinemaX for unlimited entertainment</p>
 
                 {error && (
@@ -65,7 +65,7 @@ const Signup = () => {
                                 type="text"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                className="w-full pl-11 pr-4 py-3.5 bg-black/40 border border-border-color rounded-xl focus:outline-none focus:border-accent-gold text-white placeholder:text-text-secondary/50 font-medium transition-colors"
+                                className="w-full pl-11 pr-4 py-3.5 bg-secondary-bg border border-border-color rounded-xl focus:outline-none focus:border-accent-gold text-text-primary placeholder:text-text-secondary/50 font-medium transition-colors"
                                 placeholder="John Doe"
                                 required
                             />
@@ -83,7 +83,7 @@ const Signup = () => {
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full pl-11 pr-4 py-3.5 bg-black/40 border border-border-color rounded-xl focus:outline-none focus:border-accent-gold text-white placeholder:text-text-secondary/50 font-medium transition-colors"
+                                className="w-full pl-11 pr-4 py-3.5 bg-secondary-bg border border-border-color rounded-xl focus:outline-none focus:border-accent-gold text-text-primary placeholder:text-text-secondary/50 font-medium transition-colors"
                                 placeholder="name@example.com"
                                 required
                             />
@@ -101,7 +101,7 @@ const Signup = () => {
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full pl-11 pr-4 py-3.5 bg-black/40 border border-border-color rounded-xl focus:outline-none focus:border-accent-gold text-white placeholder:text-text-secondary/50 font-medium transition-colors"
+                                className="w-full pl-11 pr-4 py-3.5 bg-secondary-bg border border-border-color rounded-xl focus:outline-none focus:border-accent-gold text-text-primary placeholder:text-text-secondary/50 font-medium transition-colors"
                                 placeholder="••••••••"
                                 required
                             />
@@ -111,7 +111,7 @@ const Signup = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-3.5 mt-6 bg-white text-black font-extrabold rounded-xl hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-[1.02] transition-all disabled:opacity-70 disabled:hover:scale-100 disabled:cursor-not-allowed"
+                        className="w-full py-3.5 mt-6 bg-text-primary text-primary-bg font-extrabold rounded-xl hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-[1.02] transition-all disabled:opacity-70 disabled:hover:scale-100 disabled:cursor-not-allowed"
                     >
                         {loading ? 'Signing Up...' : 'Sign Up'}
                     </button>
@@ -119,7 +119,7 @@ const Signup = () => {
 
                 <div className="mt-8 text-center text-sm font-medium text-text-secondary">
                     Already have an account?{' '}
-                    <Link to="/login" className="text-white hover:text-accent-gold font-bold transition-colors">
+                    <Link to="/login" className="text-text-primary hover:text-accent-gold font-bold transition-colors">
                         Sign In
                     </Link>
                 </div>

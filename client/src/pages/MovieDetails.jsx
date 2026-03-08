@@ -49,7 +49,7 @@ const MovieDetails = ({ type = "movie" }) => {
 
   if (error || !details) {
     return (
-      <div className="w-full bg-primary-bg min-h-screen flex items-center justify-center text-white">
+      <div className="w-full bg-primary-bg min-h-screen flex items-center justify-center text-text-primary">
         <p>{error || "Details not found"}</p>
       </div>
     );
@@ -99,7 +99,7 @@ const MovieDetails = ({ type = "movie" }) => {
 
           {/* Details Content */}
           <div className="flex-1 pt-4 md:pt-[10%]">
-            <h1 className="text-5xl md:text-7xl font-extrabold mb-4 leading-tight tracking-tight drop-shadow-lg text-white">
+            <h1 className="text-5xl md:text-7xl font-extrabold mb-4 leading-tight tracking-tight drop-shadow-lg text-text-primary">
               {title.toUpperCase()}
             </h1>
 
@@ -107,8 +107,8 @@ const MovieDetails = ({ type = "movie" }) => {
               <div className="flex items-center gap-1 text-accent-gold font-bold bg-accent-gold/10 px-3 py-1 rounded-full border border-accent-gold/20">
                 <Star size={18} fill="currentColor" /> {rating}
               </div>
-              {runtime && <span className="text-white font-medium">{runtime} min</span>}
-              <span className="px-3 py-1 border border-border-color rounded text-text-primary bg-white/5">
+              {runtime && <span className="text-text-primary font-medium">{runtime} min</span>}
+              <span className="px-3 py-1 border border-border-color rounded text-text-primary bg-secondary-bg/50">
                 {details.adult ? '18+' : 'PG-13'}
               </span>
               <span className="text-text-secondary">Released: {year}</span>
@@ -117,14 +117,14 @@ const MovieDetails = ({ type = "movie" }) => {
             {details.genres && details.genres.length > 0 && (
               <div className="flex gap-3 mb-10 flex-wrap">
                 {details.genres.map(genre => (
-                  <span key={genre.id} className="px-5 py-2 glass-light rounded-full text-sm font-semibold hover:bg-white/10 transition-colors cursor-pointer text-white">
+                  <span key={genre.id} className="px-5 py-2 glass-light rounded-full text-sm font-semibold hover:bg-border-color transition-colors cursor-pointer text-text-primary">
                     {genre.name}
                   </span>
                 ))}
               </div>
             )}
 
-            <p className="text-zinc-300 text-lg md:text-xl mb-12 leading-relaxed max-w-3xl font-light">
+            <p className="text-text-secondary text-lg md:text-xl mb-12 leading-relaxed max-w-3xl font-light">
               {details.overview || "No overview available."}
             </p>
 
@@ -132,15 +132,15 @@ const MovieDetails = ({ type = "movie" }) => {
               {trailerKey && (
                 <button
                   onClick={() => setShowTrailer(true)}
-                  className="flex items-center gap-3 px-8 py-4 bg-white text-black font-bold rounded-full hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-105 transition-all"
+                  className="flex items-center gap-3 px-8 py-4 bg-text-primary text-primary-bg font-bold rounded-full hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-105 transition-all"
                 >
                   <Play size={20} fill="currentColor" /> Watch Trailer
                 </button>
               )}
-              <button className="flex items-center justify-center w-14 h-14 glass-light border border-white/10 text-white font-bold rounded-full hover:bg-white/10 hover:scale-105 transition-all">
+              <button className="flex items-center justify-center w-14 h-14 glass-light border border-border-color text-text-primary font-bold rounded-full hover:bg-border-color hover:scale-105 transition-all">
                 <Plus size={24} />
               </button>
-              <button className="flex items-center justify-center w-14 h-14 glass-light border border-white/10 text-white font-bold rounded-full hover:bg-white/10 hover:scale-105 transition-all">
+              <button className="flex items-center justify-center w-14 h-14 glass-light border border-border-color text-text-primary font-bold rounded-full hover:bg-border-color hover:scale-105 transition-all">
                 <Share2 size={22} />
               </button>
             </div>
@@ -148,10 +148,10 @@ const MovieDetails = ({ type = "movie" }) => {
             {/* Production Companies Component */}
             {details.production_companies && details.production_companies.length > 0 && (
               <div>
-                <h3 className="text-2xl font-bold mb-8 text-white">Production</h3>
+                <h3 className="text-2xl font-bold mb-8 text-text-primary">Production</h3>
                 <div className="flex flex-wrap gap-6 items-center">
                   {details.production_companies.filter(c => c.logo_path).map((company) => (
-                    <div key={company.id} className="flex flex-col gap-3 group cursor-pointer items-center justify-center bg-white/5 p-4 rounded-xl border border-white/10 hover:border-accent-gold transition-colors">
+                    <div key={company.id} className="flex flex-col gap-3 group cursor-pointer items-center justify-center bg-secondary-bg/30 p-4 rounded-xl border border-border-color hover:border-accent-gold transition-colors">
                       <img
                         src={`https://image.tmdb.org/t/p/w200${company.logo_path}`}
                         alt={company.name}
@@ -170,11 +170,11 @@ const MovieDetails = ({ type = "movie" }) => {
 
       {/* Trailer Modal */}
       {showTrailer && trailerKey && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 animate-fade-in-up">
-          <div className="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#000]/90 p-4 animate-fade-in-up">
+          <div className="relative w-full max-w-5xl aspect-video bg-[#000] rounded-2xl overflow-hidden shadow-2xl border border-border-color">
             <button
               onClick={() => setShowTrailer(false)}
-              className="absolute top-4 right-4 z-10 p-2 bg-black/50 text-white rounded-full hover:bg-white/20 transition-colors pointer-events-auto"
+              className="absolute top-4 right-4 z-10 p-2 bg-[#000]/50 text-neutral-50 rounded-full hover:bg-neutral-50/20 transition-colors pointer-events-auto"
             >
               <X size={24} />
             </button>

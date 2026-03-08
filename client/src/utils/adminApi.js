@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const adminApi = axios.create({
-    baseURL: 'https://cinemax-ub5q.onrender.com/api/admin',
+    baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/admin`,
     withCredentials: true,
 });
 

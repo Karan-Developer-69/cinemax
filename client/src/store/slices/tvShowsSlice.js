@@ -3,9 +3,9 @@ import { fetchAllTvShows, fetchTrendingTvShows, fetchPopularTvShows, fetchTopRat
 
 export const getAllTvShows = createAsyncThunk(
     "tvShows/getAllTvShows",
-    async () => {
-        const data = await fetchAllTvShows();
-        return data;
+    async (page = 1) => {
+        const data = await fetchAllTvShows(page);
+        return { data, page };
     }
 );
 
@@ -35,7 +35,7 @@ export const getTopRatedTvShows = createAsyncThunk(
 
 export const getSearchedTvShows = createAsyncThunk(
     "tvShows/getSearchedTvShows",
-    async (query) => {
+    async ({ query }) => {
         const data = await fetchSearchedTvShows(query);
         return data;
     }
@@ -47,6 +47,7 @@ const initialState = {
     popularTvShows: [],
     topRatedTvShows: [],
     searchedTvShows: [],
+    page: 1,
     loading: {
         allTvShows: false,
         trendingTvShows: false,
@@ -59,7 +60,16 @@ const initialState = {
 const tvShowsSlice = createSlice({
     name: 'tvShows',
     initialState,
-    reducers: {},
+    reducers: {
+        resetTvShowsState: (state) => {
+            state.allTvShows = [];
+            state.trendingTvShows = [];
+            state.popularTvShows = [];
+            state.topRatedTvShows = [];
+            state.searchedTvShows = [];
+            state.page = 1;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getAllTvShows.pending, (state) => {
@@ -67,7 +77,12 @@ const tvShowsSlice = createSlice({
             })
             .addCase(getAllTvShows.fulfilled, (state, action) => {
                 state.loading.allTvShows = false;
-                state.allTvShows = action.payload;
+                if (action.payload.page === 1) {
+                    state.allTvShows = action.payload.data;
+                } else {
+                    state.allTvShows = [...state.allTvShows, ...action.payload.data];
+                }
+                state.page = action.payload.page;
             })
             .addCase(getAllTvShows.rejected, (state) => {
                 state.loading.allTvShows = false;
@@ -114,5 +129,5 @@ const tvShowsSlice = createSlice({
             });
     }
 });
-
+export const { resetTvShowsState } = tvShowsSlice.actions;
 export default tvShowsSlice.reducer;

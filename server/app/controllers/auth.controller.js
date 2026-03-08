@@ -53,7 +53,7 @@ exports.login = async (req, res) => {
         const user = await userModel.findOne({ email });
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(401).json({ message: "Invalid email or password" });
         }
 
         if (user.isBanned) {
@@ -63,7 +63,7 @@ exports.login = async (req, res) => {
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
-            return res.status(401).json({ message: "Invalid password" });
+            return res.status(401).json({ message: "Invalid email or password" });
         }
 
         const token = jwt.sign({ userId: user._id }, JWT_SECRET_KEY, { expiresIn: '24h' });

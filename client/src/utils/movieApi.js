@@ -1,53 +1,53 @@
 import axios from "axios";
 
-const SERVER_API = "https://cinemax-ub5q.onrender.com"
+const SERVER_API = import.meta.env.VITE_API_BASE_URL;
 
-export const fetchAllMovies = async () => {
-    const res = await axios.get(`${SERVER_API}/api/movie/all-movies`);
+export const fetchAllMovies = async (page = 1) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/all-movies?page=${page}`);
     return res.data;
 }
-export const fetchTrendingMovies = async () => {
-    const res = await axios.get(`${SERVER_API}/api/movie/trending`);
-    return res.data;
-}
-
-export const fetchPopularMovies = async () => {
-    const res = await axios.get(`${SERVER_API}/api/movie/popular`);
+export const fetchTrendingMovies = async (page = 1) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/trending?page=${page}`);
     return res.data;
 }
 
-export const fetchTopRatedMovies = async () => {
-    const res = await axios.get(`${SERVER_API}/api/movie/top_rated`);
+export const fetchPopularMovies = async (page = 1) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/popular?page=${page}`);
     return res.data;
 }
 
-export const fetchSearchedMovies = async (query) => {
-    const res = await axios.get(`${SERVER_API}/api/movie/search/${query}`);
+export const fetchTopRatedMovies = async (page = 1) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/top_rated?page=${page}`);
     return res.data;
 }
 
-export const fetchAllTvShows = async () => {
-    const res = await axios.get(`${SERVER_API}/api/movie/all-tvShows`);
+export const fetchSearchedMovies = async (query, page = 1) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/search/${query}?page=${page}`);
     return res.data;
 }
 
-export const fetchSearchedTvShows = async (query) => {
-    const res = await axios.get(`${SERVER_API}/api/movie/search-tv/${query}`);
+export const fetchAllTvShows = async (page = 1) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/all-tvShows?page=${page}`);
     return res.data;
 }
 
-export const fetchTrendingTvShows = async () => {
-    const res = await axios.get(`${SERVER_API}/api/movie/trending-tv`);
+export const fetchSearchedTvShows = async (query, page = 1) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/search-tv/${query}?page=${page}`);
     return res.data;
 }
 
-export const fetchPopularTvShows = async () => {
-    const res = await axios.get(`${SERVER_API}/api/movie/popular-tv`);
+export const fetchTrendingTvShows = async (page = 1) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/trending-tv?page=${page}`);
     return res.data;
 }
 
-export const fetchTopRatedTvShows = async () => {
-    const res = await axios.get(`${SERVER_API}/api/movie/top_rated-tv`);
+export const fetchPopularTvShows = async (page = 1) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/popular-tv?page=${page}`);
+    return res.data;
+}
+
+export const fetchTopRatedTvShows = async (page = 1) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/top_rated-tv?page=${page}`);
     return res.data;
 }
 
