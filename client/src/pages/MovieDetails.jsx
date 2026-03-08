@@ -5,6 +5,7 @@ import { fetchMovieDetails, fetchTvShowDetails } from '../utils/movieApi';
 import MovieDetailsSkeleton from '../components/ui/MovieDetailsSkeleton';
 import ActorModal from '../components/ui/ActorModal';
 import MovieCard from '../components/ui/MovieCard';
+import HorizontalScroll from '../components/ui/HorizontalScroll';
 
 const MovieDetails = ({ type = "movie" }) => {
   const { id } = useParams();
@@ -19,6 +20,14 @@ const MovieDetails = ({ type = "movie" }) => {
   const [imdbId, setImdbId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedSource, setSelectedSource] = useState('vidsrc_cc');
+
+  const sources = {
+    vidsrc_cc: (type, id) => `https://vidsrc.cc/v2/embed/${type}/${id}`,
+    vidsrc_icu: (type, id) => `https://vidsrc.icu/embed/${type}/${id}`,
+    vidlink: (type, id) => `https://vidlink.pro/${type}/${id}`,
+    autoembed: (type, id) => `https://autoembed.co/${type}/${type === 'movie' ? 'imdb/' : 'tmdb/'}${id}`
+  };
 
   useEffect(() => {
     const getDetails = async () => {
@@ -147,7 +156,7 @@ const MovieDetails = ({ type = "movie" }) => {
       </div>
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-8 relative -mt-[40vh] z-10 pb-24">
-        <div className="flex flex-col md:flex-row gap-10 md:gap-16">
+        <div className="flex flex-col  md:flex-row gap-10 md:gap-16">
 
           {/* Poster */}
           <div className="shrink-0 w-full max-w-[320px] mx-auto md:mx-0">
@@ -194,6 +203,11 @@ const MovieDetails = ({ type = "movie" }) => {
               {details.overview || "No overview available."}
             </p>
 
+
+
+          </div>
+        </div>
+
             {/* Streaming Providers */}
             {displayProviders && displayProviders.list.length > 0 && (
               <div className="mb-8">
@@ -222,7 +236,6 @@ const MovieDetails = ({ type = "movie" }) => {
                 </div>
               </div>
             )}
-
             <div className="flex flex-wrap gap-4 mb-16">
               {trailerKey && (
                 <button
@@ -238,14 +251,6 @@ const MovieDetails = ({ type = "movie" }) => {
               >
                 <Play size={20} /> Watch Free
               </button>
-              {displayProviders?.link && (
-                <button
-                  onClick={() => window.open(displayProviders.link, '_blank', 'noopener,noreferrer')}
-                  className="flex items-center gap-3 px-8 py-4 glass-light border border-border-color text-text-primary font-bold rounded-full hover:bg-border-color hover:scale-105 transition-all"
-                >
-                  <Play size={20} /> Watch on Provider
-                </button>
-              )}
               <button className="flex items-center justify-center w-14 h-14 glass-light border border-border-color text-text-primary font-bold rounded-full hover:bg-border-color hover:scale-105 transition-all">
                 <Plus size={24} />
               </button>
@@ -273,12 +278,10 @@ const MovieDetails = ({ type = "movie" }) => {
                 </div>
               </div>
             )}
-
             {/* Cast Component */}
             {cast && cast.length > 0 && (
               <div className="mt-12">
-                <h3 className="text-2xl font-bold mb-6 text-text-primary">Top Cast</h3>
-                <div className="flex overflow-x-auto gap-4 pb-4 custom-scrollbar">
+                <HorizontalScroll title="Top Cast">
                   {cast.filter(c => c.profile_path).map((actor) => (
                     <div
                       key={actor.id}
@@ -297,27 +300,21 @@ const MovieDetails = ({ type = "movie" }) => {
                       <p className="text-xs text-text-secondary line-clamp-1">{actor.character}</p>
                     </div>
                   ))}
-                </div>
+                </HorizontalScroll>
               </div>
             )}
-
-          </div>
-        </div>
       </div>
 
       {/* Similar Media */}
       {similar && similar.length > 0 && (
         <div className="max-w-[1400px] mx-auto px-6 md:px-8 mt-12 border-t border-border-color pt-12 pb-24 relative z-10">
-          <h2 className="text-3xl font-extrabold tracking-tight mb-8 text-text-primary">
-            You Might Also Like
-          </h2>
-          <div className="flex overflow-x-auto gap-6 pb-8 custom-scrollbar [&::-webkit-scrollbar]:hidden">
+          <HorizontalScroll title="You Might Also Like">
             {similar.map(item => (
               <div key={item.id} className="w-48 md:w-56 shrink-0">
                 <MovieCard {...item} type={type} />
               </div>
             ))}
-          </div>
+          </HorizontalScroll>
         </div>
       )}
 
@@ -350,22 +347,51 @@ const MovieDetails = ({ type = "movie" }) => {
 
       {/* Website Player Modal */}
       {showWebsitePlayer && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#000]/95 p-4 animate-fade-in-up transition-all">
+        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#000]/95 p-4 animate-fade-in-up transition-all">
           <div className="relative w-full max-w-6xl aspect-video bg-[#000] rounded-2xl overflow-hidden shadow-2xl border border-border-color">
             <button
               onClick={() => setShowWebsitePlayer(false)}
-              className="absolute -top-12 right-0 md:top-4 md:-right-16 z-10 p-2 bg-neutral-800 text-neutral-50 rounded-full hover:bg-red-500 transition-colors pointer-events-auto"
+              className="absolute top-4 right-4 z-20 p-2 bg-neutral-800/50 text-neutral-50 rounded-full hover:bg-red-500 transition-colors pointer-events-auto"
             >
               <X size={24} />
             </button>
             <iframe
               className="w-full h-full bg-[#000]"
-              src={`https://vidsrc.to/embed/${type}/${id}`}
+              src={sources[selectedSource](type, type === 'movie' ? imdbId || id : id)}
               title="Website Player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
               allowFullScreen
             ></iframe>
+          </div>
+
+          {/* Source Selector UI */}
+          <div className="mt-6 flex flex-wrap justify-center gap-3 max-w-4xl">
+            <div className="w-full text-center text-text-secondary text-sm mb-1">Select a server if the current one is slow or not working:</div>
+            <button
+              onClick={() => setSelectedSource('vidsrc_cc')}
+              className={`px-6 py-2 rounded-xl text-sm font-bold transition-all border ${selectedSource === 'vidsrc_cc' ? 'bg-accent-gold text-primary-bg border-accent-gold' : 'bg-secondary-bg text-text-primary border-border-color hover:border-accent-gold'}`}
+            >
+              Server 1 (Pro)
+            </button>
+            <button
+              onClick={() => setSelectedSource('vidsrc_icu')}
+              className={`px-6 py-2 rounded-xl text-sm font-bold transition-all border ${selectedSource === 'vidsrc_icu' ? 'bg-accent-gold text-primary-bg border-accent-gold' : 'bg-secondary-bg text-text-primary border-border-color hover:border-accent-gold'}`}
+            >
+              Server 2 (Icu)
+            </button>
+            <button
+              onClick={() => setSelectedSource('vidlink')}
+              className={`px-6 py-2 rounded-xl text-sm font-bold transition-all border ${selectedSource === 'vidlink' ? 'bg-accent-gold text-primary-bg border-accent-gold' : 'bg-secondary-bg text-text-primary border-border-color hover:border-accent-gold'}`}
+            >
+              Server 3 (Link)
+            </button>
+            <button
+              onClick={() => setSelectedSource('autoembed')}
+              className={`px-6 py-2 rounded-xl text-sm font-bold transition-all border ${selectedSource === 'autoembed' ? 'bg-accent-gold text-primary-bg border-accent-gold' : 'bg-secondary-bg text-text-primary border-border-color hover:border-accent-gold'}`}
+            >
+              Server 4 (Auto)
+            </button>
           </div>
         </div>
       )}
