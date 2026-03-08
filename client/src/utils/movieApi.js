@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const SERVER_API = "https://cinemax-zeta.vercel.app"
+const SERVER_API = "https://cinemax-ub5q.onrender.com"
 
 export const fetchAllMovies = async () => {
     const res = await axios.get(`${SERVER_API}/api/movie/all-movies`);

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "https://cinemax-zeta.vercel.app/api/auth",
+    baseURL: "https://cinemax-ub5q.onrender.com/api/auth",
     withCredentials: true,
 });
 
