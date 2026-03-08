@@ -24,4 +24,9 @@ router.get('/cast/:id', movieController.getMovieCast)
 router.get('/cast-tv/:id', movieController.getTvShowCast)
 router.get('/person/:id', movieController.getPersonDetails)
 
+router.get('/similar/:id', movieController.getSimilarMovies)
+router.get('/similar-tv/:id', movieController.getSimilarTvShows)
+router.get('/providers/:id', movieController.getMovieProviders)
+router.get('/providers-tv/:id', movieController.getTvShowProviders)
+
 module.exports = router;

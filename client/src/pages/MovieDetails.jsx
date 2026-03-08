@@ -1,16 +1,20 @@
 import { Play, Plus, Share2, Star, X } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { fetchMovieDetails, fetchTvShowDetails, fetchMovieTrailer, fetchMovieCast, fetchTvShowCast } from '../utils/movieApi';
+import { fetchMovieDetails, fetchTvShowDetails, fetchMovieTrailer, fetchMovieCast, fetchTvShowCast, fetchSimilarMovies, fetchSimilarTvShows, fetchMovieProviders, fetchTvShowProviders } from '../utils/movieApi';
 import MovieDetailsSkeleton from '../components/ui/MovieDetailsSkeleton';
 import ActorModal from '../components/ui/ActorModal';
+import MovieCard from '../components/ui/MovieCard';
 
 const MovieDetails = ({ type = "movie" }) => {
   const { id } = useParams();
   const [details, setDetails] = useState(null);
   const [cast, setCast] = useState([]);
+  const [similar, setSimilar] = useState([]);
+  const [providers, setProviders] = useState(null);
   const [trailerKey, setTrailerKey] = useState(null);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [showWebsitePlayer, setShowWebsitePlayer] = useState(false);
   const [selectedActor, setSelectedActor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -63,6 +67,34 @@ const MovieDetails = ({ type = "movie" }) => {
     );
   }
 
+  const getDisplayProviders = () => {
+    if (!providers || Object.keys(providers).length === 0) return null;
+    const countryData = providers.IN || providers.US || Object.values(providers)[0];
+    if (!countryData) return null;
+
+    // Group all free
+    const freeRaw = [...(countryData.free || []), ...(countryData.ads || [])].map(p => ({ ...p, isFree: true }));
+    const paidRaw = [...(countryData.flatrate || []), ...(countryData.rent || []), ...(countryData.buy || [])].map(p => ({ ...p, isFree: false }));
+
+    const uniqueProviders = [];
+    const seen = new Set();
+
+    // Prioritize free in the unique list
+    [...freeRaw, ...paidRaw].forEach(p => {
+      if (!seen.has(p.provider_id)) {
+        seen.add(p.provider_id);
+        uniqueProviders.push(p);
+      }
+    });
+
+    return {
+      list: uniqueProviders.slice(0, 8), // Max 8 providers
+      link: countryData.link
+    };
+  };
+
+  const displayProviders = getDisplayProviders();
+
   const title = details.title || details.name;
   const rating = details.vote_average?.toFixed(1) || 'N/A';
   const runtime = details.runtime || details.episode_run_time?.[0];
@@ -72,7 +104,7 @@ const MovieDetails = ({ type = "movie" }) => {
     : `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 450'%3E%3Cdefs%3E%3ClinearGradient id='gf' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23f43f5e;stop-opacity:1' /%3E%3Cstop offset='50%25' style='stop-color:%2318181b;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23000000;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='450' fill='url(%23gf)'/%3E%3Ctext x='150' y='225' font-size='28' fill='white' text-anchor='middle' dominant-baseline='middle' font-weight='bold'%3E${id || 'Movie'}%3C/text%3E%3C/svg%3E`;
   const backdropUrl = details.backdrop_path
     ? (details.backdrop_path.startsWith('http') ? details.backdrop_path : `https://image.tmdb.org/t/p/original${details.backdrop_path}`)
-    : `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="mdg" x1="0%25" y1="0%25" x2="100%25" y2="100%25"><stop offset="0%25" style="stop-color:%23e11d48;stop-opacity:1" /><stop offset="100%25" style="stop-color:%2309090b;stop-opacity:1" /></linearGradient></defs><rect width="1200" height="800" fill="url(%23mdg)"/></svg>`;
+    : `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="mdg" x1="0%25" y1="0%25" x2="100%25" y2="100%25"><stop offset="0%25" style="stop-color:%23e11d48;stop-opacity:1" /><stop offset="100%25" style="stop-color:%2309090b;stop-opacity:1" /></linearGradient></defs><rect width="1200" height="800" fill="url(%23mdg)" /></svg>`;
 
   return (
     <div className="w-full relative bg-primary-bg min-h-screen">
@@ -137,6 +169,33 @@ const MovieDetails = ({ type = "movie" }) => {
               {details.overview || "No overview available."}
             </p>
 
+            {/* Streaming Providers */}
+            {displayProviders && displayProviders.list.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-xl font-bold mb-4 text-text-primary">Streaming on</h3>
+                <div className="flex flex-wrap gap-4">
+                  {displayProviders.list.map(p => (
+                    <div
+                      key={p.provider_id}
+                      onClick={() => {
+                        if (p.isFree) {
+                          setShowWebsitePlayer(true);
+                        } else {
+                          window.open(displayProviders.link, '_blank', 'noopener,noreferrer');
+                        }
+                      }}
+                      className="flex flex-col items-center gap-2 cursor-pointer group"
+                    >
+                      <div className="relative">
+                        <img src={`https://image.tmdb.org/t/p/w200${p.logo_path}`} title={`${p.provider_name} ${p.isFree ? '(Free)' : ''}`} alt={p.provider_name} className="w-12 h-12 rounded-xl object-contain group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(244,63,94,0.4)] transition-all shadow-lg" loading="lazy" />
+                        {p.isFree && <span className="absolute -top-2 -right-2 bg-green-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded-full z-10">FREE</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="flex flex-wrap gap-4 mb-16">
               {trailerKey && (
                 <button
@@ -146,6 +205,12 @@ const MovieDetails = ({ type = "movie" }) => {
                   <Play size={20} fill="currentColor" /> Watch Trailer
                 </button>
               )}
+              <button
+                onClick={() => setShowWebsitePlayer(true)}
+                className="flex items-center gap-3 px-8 py-4 glass-primary border border-accent-gold/30 text-accent-gold font-bold rounded-full hover:bg-accent-gold/10 hover:shadow-[0_0_20px_rgba(244,63,94,0.2)] hover:scale-105 transition-all"
+              >
+                <Play size={20} /> Play Movie
+              </button>
               <button className="flex items-center justify-center w-14 h-14 glass-light border border-border-color text-text-primary font-bold rounded-full hover:bg-border-color hover:scale-105 transition-all">
                 <Plus size={24} />
               </button>
@@ -205,6 +270,22 @@ const MovieDetails = ({ type = "movie" }) => {
         </div>
       </div>
 
+      {/* Similar Media */}
+      {similar && similar.length > 0 && (
+        <div className="max-w-[1400px] mx-auto px-6 md:px-8 mt-12 border-t border-border-color pt-12 pb-24 relative z-10">
+          <h2 className="text-3xl font-extrabold tracking-tight mb-8 text-text-primary">
+            You Might Also Like
+          </h2>
+          <div className="flex overflow-x-auto gap-6 pb-8 custom-scrollbar [&::-webkit-scrollbar]:hidden">
+            {similar.map(item => (
+              <div key={item.id} className="w-48 md:w-56 shrink-0">
+                <MovieCard {...item} type={type} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Trailer Modal */}
       {showTrailer && trailerKey && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#000]/90 p-4 animate-fade-in-up">
@@ -230,6 +311,28 @@ const MovieDetails = ({ type = "movie" }) => {
       {/* Actor Modal */}
       {selectedActor && (
         <ActorModal actorId={selectedActor} onClose={() => setSelectedActor(null)} />
+      )}
+
+      {/* Website Player Modal */}
+      {showWebsitePlayer && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#000]/95 p-4 animate-fade-in-up transition-all">
+          <div className="relative w-full max-w-6xl aspect-video bg-[#000] rounded-2xl overflow-hidden shadow-2xl border border-border-color">
+            <button
+              onClick={() => setShowWebsitePlayer(false)}
+              className="absolute -top-12 right-0 md:top-4 md:-right-16 z-10 p-2 bg-neutral-800 text-neutral-50 rounded-full hover:bg-red-500 transition-colors pointer-events-auto"
+            >
+              <X size={24} />
+            </button>
+            <iframe
+              className="w-full h-full bg-[#000]"
+              src={`https://vidsrc.to/embed/${type}/${id}`}
+              title="Website Player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
       )}
     </div>
   );

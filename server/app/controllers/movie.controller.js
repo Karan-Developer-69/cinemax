@@ -264,3 +264,39 @@ exports.getPersonDetails = async (req, res) => {
         res.status(500).json({ error: e.message });
     }
 };
+
+exports.getSimilarMovies = async (req, res) => {
+    try {
+        const similar = await movieProvider.getSimilarMovies(req.params.id);
+        res.status(200).json(similar);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}
+
+exports.getSimilarTvShows = async (req, res) => {
+    try {
+        const similar = await movieProvider.getSimilarTvShows(req.params.id);
+        res.status(200).json(similar);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}
+
+exports.getMovieProviders = async (req, res) => {
+    try {
+        const providers = await movieProvider.getMovieProviders(req.params.id);
+        res.status(200).json(providers);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}
+
+exports.getTvShowProviders = async (req, res) => {
+    try {
+        const providers = await movieProvider.getTvShowProviders(req.params.id);
+        res.status(200).json(providers);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}

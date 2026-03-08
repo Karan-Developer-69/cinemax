@@ -85,3 +85,23 @@ export const fetchPersonDetails = async (id) => {
     const res = await axios.get(`${SERVER_API}/api/movie/person/${id}`);
     return res.data;
 }
+
+export const fetchSimilarMovies = async (id) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/similar/${id}`);
+    return res.data;
+}
+
+export const fetchSimilarTvShows = async (id) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/similar-tv/${id}`);
+    return res.data;
+}
+
+export const fetchMovieProviders = async (id) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/providers/${id}`);
+    return res.data;
+}
+
+export const fetchTvShowProviders = async (id) => {
+    const res = await axios.get(`${SERVER_API}/api/movie/providers-tv/${id}`);
+    return res.data;
+}

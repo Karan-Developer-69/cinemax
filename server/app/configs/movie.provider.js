@@ -292,6 +292,48 @@ const getPersonDetails = async (id) => {
     return res.data;
 }
 
+const getSimilarMovies = async (id) => {
+    const res = await axios.get(`${BASE_URL}/3/movie/${id}/similar`, {
+        headers: { Authorization: 'Bearer ' + API_KEY }
+    });
+    return res.data.results.map(movie => ({
+        id: movie.id,
+        title: movie.title,
+        rating: movie.vote_average.toFixed(1),
+        year: movie.release_date ? movie.release_date.split('-')[0] : null,
+        imageSrc: `https://image.tmdb.org/t/p/w200${movie.poster_path}`,
+        type: 'movie'
+    }));
+}
+
+const getSimilarTvShows = async (id) => {
+    const res = await axios.get(`${BASE_URL}/3/tv/${id}/similar`, {
+        headers: { Authorization: 'Bearer ' + API_KEY }
+    });
+    return res.data.results.map(show => ({
+        id: show.id,
+        title: show.name,
+        rating: show.vote_average.toFixed(1),
+        year: show.first_air_date ? show.first_air_date.split('-')[0] : null,
+        imageSrc: `https://image.tmdb.org/t/p/w200${show.poster_path}`,
+        type: 'tv'
+    }));
+}
+
+const getMovieProviders = async (id) => {
+    const res = await axios.get(`${BASE_URL}/3/movie/${id}/watch/providers`, {
+        headers: { Authorization: 'Bearer ' + API_KEY }
+    });
+    return res.data.results;
+}
+
+const getTvShowProviders = async (id) => {
+    const res = await axios.get(`${BASE_URL}/3/tv/${id}/watch/providers`, {
+        headers: { Authorization: 'Bearer ' + API_KEY }
+    });
+    return res.data.results;
+}
+
 module.exports = {
     getMovies,
     getTvShows,
@@ -308,5 +350,9 @@ module.exports = {
     getMovieTrailer,
     getMovieCast,
     getTvShowCast,
-    getPersonDetails
+    getPersonDetails,
+    getSimilarMovies,
+    getSimilarTvShows,
+    getMovieProviders,
+    getTvShowProviders
 };
