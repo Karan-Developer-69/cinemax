@@ -17,6 +17,17 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+const connectDB = require('./configs/db');
+
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        res.status(500).json({ error: "Failed to connect to the database. Ensure your IP is whitelisted (0.0.0.0/0) in MongoDB Atlas.", details: err.message });
+    }
+});
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/movie', movieRoutes);
