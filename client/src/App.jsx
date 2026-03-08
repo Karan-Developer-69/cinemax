@@ -13,6 +13,7 @@ import Signup from './pages/Signup';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminRoute from './components/layout/AdminRoute';
 import { Toaster } from 'react-hot-toast';
+import NotFound from './pages/NotFound';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -53,6 +54,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
+          <Route path='*' element={<NotFound />} />
           <Route path="movies" element={<Movies />} />
           <Route path="tv-shows" element={<TvShows />} />
           <Route path="movie/:id" element={<MovieDetails type="movie" />} />

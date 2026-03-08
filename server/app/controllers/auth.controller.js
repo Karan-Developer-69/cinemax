@@ -3,6 +3,13 @@ const userModel = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || "DEFAULT_123";
 
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+};
+
 exports.register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
@@ -27,15 +34,16 @@ exports.register = async (req, res) => {
 
         const token = jwt.sign({ userId: user._id }, JWT_SECRET_KEY, { expiresIn: '24h' });
 
-        res.cookie('token', token);
+        res.cookie('token', token, cookieOptions);
         res.status(201).json({
             message: "User created successfully",
             user: {
+                id: user._id,
                 email: user.email,
                 username: user.username,
+                role: user.role
             }
-        }
-        );
+        });
 
     } catch (error) {
         res.status(500).json({ message: "Error registering user", error: error.message });
@@ -68,13 +76,15 @@ exports.login = async (req, res) => {
 
         const token = jwt.sign({ userId: user._id }, JWT_SECRET_KEY, { expiresIn: '24h' });
 
-        res.cookie('token', token);
+        res.cookie('token', token, cookieOptions);
 
         res.status(200).json({
             message: "User logged in successfully",
             user: {
+                id: user._id,
                 email: user.email,
                 username: user.username,
+                role: user.role
             }
         });
     } catch (error) {
@@ -98,7 +108,7 @@ exports.getMe = async (req, res) => {
         }
 
         if (user.isBanned) {
-            res.clearCookie("token");
+            res.clearCookie("token", cookieOptions);
             return res.status(403).json({ message: "Your account has been banned." });
         }
 
@@ -110,6 +120,6 @@ exports.getMe = async (req, res) => {
 };
 
 exports.logout = (req, res) => {
-    res.clearCookie("token");
+    res.clearCookie("token", cookieOptions);
     res.status(200).json({ message: "Logged out successfully" });
 };
