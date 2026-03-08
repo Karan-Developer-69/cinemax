@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:3000/api/favorites",
+    baseURL: "https://cinemax-zeta.vercel.app/api/favorites",
     withCredentials: true,
 });
 
@@ -22,7 +22,7 @@ export const fetchFavorites = async (userId) => {
 
 // TV Show Favorites API
 const tvApi = axios.create({
-    baseURL: "http://localhost:3000/api/favorites-tv",
+    baseURL: "https://cinemax-zeta.vercel.app/api/favorites-tv",
     withCredentials: true,
 });
 
